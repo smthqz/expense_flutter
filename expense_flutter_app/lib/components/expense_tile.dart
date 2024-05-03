@@ -1,6 +1,5 @@
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/models/expense_item.dart';
-import 'package:expense_flutter_app/pages/edit_expense_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';

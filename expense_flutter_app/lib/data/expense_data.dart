@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:expense_flutter_app/data/hive_budget.dart' as bd;
 import 'package:expense_flutter_app/data/hive_goals.dart' as gd;
 import 'package:intl/intl.dart';
-
 import 'hive_database.dart';
 
 class ExpenseData extends ChangeNotifier {
@@ -21,7 +20,6 @@ class ExpenseData extends ChangeNotifier {
   String get selectedCurrency => _selectedCurrency;
   String _currencySymbol = '₽';
   String get currencySymbol => _currencySymbol;
-  // Переменная для хранения русского падежа месяца
   String russianMonthName = '';
   bool _isPrepareDataCalled = false; // Флаг для отслеживания вызова prepareData
   // Флаг, указывающий, были ли данные загружены ранее
@@ -31,11 +29,9 @@ class ExpenseData extends ChangeNotifier {
   bool _hasExpensesForSelectedMonth = false;
 
   ExpenseData() {
-    // Устанавливаем русский падеж месяца при инициализации класса
     russianMonthName = getRussianMonthName(DateTime.now().month - 1);
     _selectedMonth = DateTime.now();
     _selectedCurrency = 'RUB';
-    // Вызываем prepareData только если флаг _isPrepareDataCalled равен false
     if (!_isPrepareDataCalled) {
       prepareData();
       _isPrepareDataCalled =
@@ -54,19 +50,16 @@ class ExpenseData extends ChangeNotifier {
       _currencySymbol = '€';
     }
 
-    // Затем обновляем выбранную валюту
     _selectedCurrency = currency;
 
     notifyListeners(); // Сообщаем виджетам, что состояние изменилось
   }
 
-  // Getter для hasExpensesForSelectedMonth
   bool get hasExpensesForSelectedMonth => _hasExpensesForSelectedMonth;
 
-  // Setter для hasExpensesForSelectedMonth
   set hasExpensesForSelectedMonth(bool value) {
     _hasExpensesForSelectedMonth = value;
-    notifyListeners(); // Уведомляем подписчиков об изменении
+    notifyListeners(); 
   }
 
   DateTime get selectedMonth => _selectedMonth;
@@ -76,9 +69,7 @@ class ExpenseData extends ChangeNotifier {
   }
 
   int _selectedMonthIndex = DateTime.now().month - 1;
-  // Getter для selectedMonthIndex
   int get selectedMonthIndex => _selectedMonthIndex;
-  // Setter для selectedMonthIndex
   void setSelectedMonthIndex(int index) {
     _selectedMonthIndex = index;
     notifyListeners(); // Сообщаем об изменениях провайдеру
@@ -108,10 +99,6 @@ class ExpenseData extends ChangeNotifier {
     _monthName = value;
     notifyListeners(); // Уведомляем подписчиков об изменении
   }
-
-  // Переменная для хранения русского падежа месяца
-  /*String _russianMonthName = DateFormat.MMMM('ru').format(DateTime.now());
-  String get russianMonthName => _russianMonthName;*/
 
   // Метод для установки нового значения русского падежа месяца
   void setRussianMonthName(String value) {
@@ -151,11 +138,6 @@ class ExpenseData extends ChangeNotifier {
     }
   }
 
-  // get expense list
-  /*List<ExpenseItem> getAllExpenseList() {
-
-    return overallExpenseList;
-  }*/
   List<ExpenseItem> getAllExpenseList(DateTime selectedMonth) {
     // Получите все расходы
     List<ExpenseItem> allExpenses = overallExpenseList;
@@ -307,11 +289,11 @@ class ExpenseData extends ChangeNotifier {
     // Проверяем, есть ли расходы для выбранного месяца
     if (expensesForSelectedMonth.isNotEmpty) {
       // Если есть, устанавливаем флаг или переменную для отображения расходов
-      // Например:
+     
       hasExpensesForSelectedMonth = true;
     } else {
       // Если нет, устанавливаем флаг или переменную для скрытия расходов
-      // Например:
+      
       hasExpensesForSelectedMonth = false;
     }
 
