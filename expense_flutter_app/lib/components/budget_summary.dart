@@ -22,7 +22,6 @@ class MyPercentIndicator extends StatelessWidget {
 
     // Логирование для отладки
     debugPrint('Spent percent: $spentPercent');
-    debugPrint('Total Expenses: $totalExpenses');
     debugPrint('Budget Amount: $budgetAmount');
 
     return LayoutBuilder(

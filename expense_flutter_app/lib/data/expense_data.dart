@@ -661,7 +661,6 @@ class ExpenseData extends ChangeNotifier {
 
   double getRemainingBudgetPercent() {
     if (currentBudget != null && currentBudget!.originalAmount > 0) {
-      // Теперь возвращаем долю, а не проценты
       return currentBudget!.amount / currentBudget!.originalAmount;
     }
     return 1.0; // Если бюджет не установлен или originalAmount равен 0, возвращаем 1.0 (100%)
