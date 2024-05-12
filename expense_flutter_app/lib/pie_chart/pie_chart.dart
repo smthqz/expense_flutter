@@ -1,9 +1,5 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
-
-
-
+import 'package:fl_chart/fl_chart.dart';
 
 class MyPieChart extends StatelessWidget {
   final Map<String, double> categoryExpenses;
@@ -15,6 +11,21 @@ class MyPieChart extends StatelessWidget {
     required this.colors,
   }) : super(key: key);
 
+  String formatDouble(double value) {
+    String formattedValue = value.toString();
+
+    // Проверяем, если значение является целым числом
+    if (value == value.toInt()) {
+      formattedValue =
+          value.toInt().toString(); // Преобразуем в строку без дробной части
+    } else {
+      formattedValue =
+          formattedValue.replaceAll(RegExp(r'(?<=\.\d*?)0*?$'), '');
+    }
+
+    return '$formattedValue';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +34,7 @@ class MyPieChart extends StatelessWidget {
       child: Stack(
         children: [
           Transform.scale(
-            scale: 0.75,
+            scale: 0.70,
             child: PieChart(
               PieChartData(
                 sectionsSpace: 8,
@@ -32,8 +43,8 @@ class MyPieChart extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 8, // Располагаем в левом углу
-            bottom: 8, // Располагаем внизу
+            right: 0, // Располагаем в левом углу
+            bottom: 4, // Располагаем внизу
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: _buildLegend(),
@@ -53,6 +64,7 @@ class MyPieChart extends StatelessWidget {
         PieChartSectionData(
           showTitle: true,
           value: expense,
+          title: formatDouble(expense), // Используем форматированное значение
           color: colors[colorIndex],
           radius: 30, // Радиус секции
           titleStyle: TextStyle(
@@ -73,23 +85,25 @@ class MyPieChart extends StatelessWidget {
     int colorIndex = 0;
     categoryExpenses.forEach((category, _) {
       legendWidgets.add(
-        Row(
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              //color: colors[colorIndex],
-              decoration: BoxDecoration(
-                color: colors[colorIndex],
-                borderRadius: BorderRadius.circular(6)
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Row(
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: colors[colorIndex],
+                  borderRadius: BorderRadius.circular(6)
+                ),
               ),
-            ),
-            SizedBox(width: 4),
-            Text(
-              category,
-              style: TextStyle(fontSize: 12, color: Colors.black),
-            ),
-          ],
+              SizedBox(width: 4),
+              Text(
+                category,
+                style: TextStyle(fontSize: 12, color: Colors.black),
+              ),
+            ],
+          ),
         ),
       );
       legendWidgets.add(SizedBox(height: 4));

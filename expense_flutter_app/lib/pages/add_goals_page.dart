@@ -57,7 +57,7 @@ class _AddGoalsPageState extends State<AddGoalsPage> {
                         .floating, 
         shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
-                          10), // Установите скругленные углы
+                          10), 
                     ),
       ),
     );

@@ -119,7 +119,7 @@ class GoalListItem extends StatelessWidget {
               MyPercentIndicatorGoal(
                 goalAmount: goal.goalAmount,
                 savedAmount: goal.savedAmount,
-              ), // Ваш индикатор (для примера)
+              ),
               const SizedBox(height: 10),
               RichText(
                 text: TextSpan(

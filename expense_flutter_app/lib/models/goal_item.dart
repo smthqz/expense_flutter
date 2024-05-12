@@ -31,7 +31,7 @@ class AmountHistoryItemAdapter extends TypeAdapter<AmountHistoryItem> {
 
   @override
   AmountHistoryItem read(BinaryReader reader) {
-    // Прочитайте данные из бинарного потока и создайте объект AmountHistoryItem
+    // данные из бинарного потока и создание объекта AmountHistoryItem
     final amount = reader.readDouble();
     final date = DateTime.parse(reader.readString());
     return AmountHistoryItem(amount: amount, date: date);
@@ -39,7 +39,7 @@ class AmountHistoryItemAdapter extends TypeAdapter<AmountHistoryItem> {
 
   @override
   void write(BinaryWriter writer, AmountHistoryItem obj) {
-    // Запишите данные объекта AmountHistoryItem в бинарный поток
+    // Запись данных объекта AmountHistoryItem в бинарный поток
     writer.writeDouble(obj.amount);
     writer.writeString(obj.date.toIso8601String());
   }

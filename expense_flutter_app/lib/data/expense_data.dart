@@ -59,7 +59,7 @@ class ExpenseData extends ChangeNotifier {
 
   set hasExpensesForSelectedMonth(bool value) {
     _hasExpensesForSelectedMonth = value;
-    notifyListeners(); 
+    notifyListeners();
   }
 
   DateTime get selectedMonth => _selectedMonth;
@@ -90,7 +90,7 @@ class ExpenseData extends ChangeNotifier {
   final db2 = bd.HiveDataBase();
   // List of ALL goals
   List<GoalItem> goalList = [];
-  final dbGoal = gd.HiveGoalDatabase(); // Добавим базу данных для целей
+  final dbGoal = gd.HiveGoalDatabase(); // база данных для целей
   String _monthName = DateFormat.MMMM('ru').format(DateTime.now());
   String get monthName => _monthName; // Геттер для получения значения monthName
 
@@ -139,10 +139,10 @@ class ExpenseData extends ChangeNotifier {
   }
 
   List<ExpenseItem> getAllExpenseList(DateTime selectedMonth) {
-    // Получите все расходы
+    // все расходы
     List<ExpenseItem> allExpenses = overallExpenseList;
 
-    // Фильтруйте список расходов по выбранному месяцу
+    // Фильтрация списка расходов по выбранному месяцу
     List<ExpenseItem> filteredExpenses = allExpenses
         .where((expense) =>
             expense.dateTime.month == selectedMonth.month &&
@@ -153,10 +153,10 @@ class ExpenseData extends ChangeNotifier {
   }
 
   List<ExpenseItem> getFilteredExpenseListByMonth(DateTime selectedMonth) {
-    // Получите все расходы
+    // все расходы
     List<ExpenseItem> allExpenses = overallExpenseList;
 
-    // Фильтруйте список расходов по выбранному месяцу
+    // список расходов по выбранному месяцу
     List<ExpenseItem> filteredExpenses = allExpenses
         .where((expense) =>
             expense.dateTime.month == selectedMonth.month &&
@@ -289,11 +289,11 @@ class ExpenseData extends ChangeNotifier {
     // Проверяем, есть ли расходы для выбранного месяца
     if (expensesForSelectedMonth.isNotEmpty) {
       // Если есть, устанавливаем флаг или переменную для отображения расходов
-     
+
       hasExpensesForSelectedMonth = true;
     } else {
       // Если нет, устанавливаем флаг или переменную для скрытия расходов
-      
+
       hasExpensesForSelectedMonth = false;
     }
 
@@ -553,11 +553,17 @@ class ExpenseData extends ChangeNotifier {
   // delete expense
   void deleteExpense(ExpenseItem expense) {
     double expenseAmount = double.parse(expense.amount);
+
+    // Проверяем наличие текущего бюджета
     if (currentBudget != null) {
-      currentBudget!.amount +=
-          expenseAmount; // Возвращаем сумму обратно в бюджет при удалении расхода
-      bd.HiveDataBase.saveBudgetData(currentBudget!);
+      // Учитываем только те расходы, которые созданы после создания бюджета
+      if (expense.dateTime.isAfter(currentBudget!.startDate)) {
+        currentBudget!.amount +=
+            expenseAmount; // Возвращаем сумму обратно в бюджет при удалении расхода
+        bd.HiveDataBase.saveBudgetData(currentBudget!);
+      }
     }
+
     overallExpenseList.remove(expense);
     notifyListeners();
     db.saveData(overallExpenseList);
@@ -651,12 +657,20 @@ class ExpenseData extends ChangeNotifier {
     return categoryExpenses;
   }
 
+
   double getTotalExpenses() {
-    double total = 0.0;
-    for (var expense in overallExpenseList) {
-      total += double.parse(expense.amount); // Суммирование всех расходов
+    double totalAmount = 0.0;
+
+    // Проходим по всем расходам
+    for (ExpenseItem expense in overallExpenseList) {
+      // Учитываем только те расходы, которые созданы после создания бюджета
+      if (currentBudget != null &&
+          expense.dateTime.isAfter(currentBudget!.startDate)) {
+        totalAmount += double.parse(expense.amount);
+      }
     }
-    return total;
+
+    return totalAmount;
   }
 
   double getRemainingBudgetPercent() {

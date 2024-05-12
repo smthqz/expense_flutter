@@ -1,5 +1,6 @@
 import 'package:expense_flutter_app/pages/budget_page.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/models/goal_item.dart';
@@ -86,6 +87,7 @@ class _GoalHistoryPageState extends State<GoalHistoryPage> {
           ),
         ],
       ),
+      backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: amountHistory.isNotEmpty
             ? amountHistory.length * 2 - 1
@@ -106,8 +108,7 @@ class _GoalHistoryPageState extends State<GoalHistoryPage> {
               reversedIndex ~/ 2); // Получаем элемент с перевернутым индексом
           String formattedAmount =
               formatDouble(item.amount) + ' $currencySymbol';
-          String formattedDate =
-              '${item.date.day}/${item.date.month}/${item.date.year}';
+          String formattedDate = DateFormat('dd.MM.yyyy').format(item.date);
           return ListTile(
             title: Text(
               formattedDate,

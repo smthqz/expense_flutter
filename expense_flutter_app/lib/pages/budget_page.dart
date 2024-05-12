@@ -8,6 +8,7 @@ import 'package:expense_flutter_app/models/goal_item.dart';
 import 'package:expense_flutter_app/pages/add_budget_page.dart';
 import 'package:expense_flutter_app/pages/add_goals_page.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class BudgetPage extends StatefulWidget {
@@ -24,7 +25,6 @@ class _BudgetPageState extends State<BudgetPage> {
     super.initState();
     Provider.of<ExpenseData>(context, listen: false).loadData();
     _loadSavedGoals();
-    
   }
 
   // Метод для загрузки сохраненных целей
@@ -99,7 +99,7 @@ class _BudgetPageState extends State<BudgetPage> {
               ),
               const SizedBox(
                 height: 10,
-              ), // Добавляем немного пространства между текстом "Бюджет" и кнопкой/плашкой
+              ), // Добавляем немного пространства между текстом "Бюджет" и кнопкой
               if (currentBudget != null) ...[
                 // Плашка с информацией о бюджете
                 Container(
@@ -112,7 +112,7 @@ class _BudgetPageState extends State<BudgetPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Бюджет до ${currentBudget?.endDate.day}/${currentBudget?.endDate.month}/${currentBudget?.endDate.year}',
+                        'Бюджет до ${DateFormat('dd.MM.yyyy').format(currentBudget.endDate)}',
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -120,7 +120,7 @@ class _BudgetPageState extends State<BudgetPage> {
                       ),
                       const SizedBox(height: 10),
                       MyPercentIndicator(
-                        budgetAmount: currentBudget?.amount ?? 0,
+                        budgetAmount: currentBudget.amount,
                         totalExpenses: spentAmount,
                       ),
                       const SizedBox(height: 10),
@@ -135,7 +135,8 @@ class _BudgetPageState extends State<BudgetPage> {
                               text: 'Осталось из бюджета: ',
                             ),
                             TextSpan(
-                              text: '${formatDouble(currentBudget.amount)} $currencySymbol',
+                              text:
+                                  '${formatDouble(currentBudget.amount)} $currencySymbol',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),

@@ -2,6 +2,7 @@ import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/data/hive_budget.dart';
 import 'package:expense_flutter_app/models/expense_item.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseDetail extends StatefulWidget {
@@ -30,13 +31,13 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
   @override
   Widget build(BuildContext context) {
     List<String> categories = [
-    'Еда',
-    'Транспорт',
-    'Жилье',
-    'Развлечения',
-    'Здоровье',
-    'Без категории'
-  ];
+      'Еда',
+      'Транспорт',
+      'Жилье',
+      'Развлечения',
+      'Здоровье',
+      'Без категории'
+    ];
     DateTime selectedMonth = Provider.of<ExpenseData>(context).selectedMonth;
     List<ExpenseItem> filteredExpenses = Provider.of<ExpenseData>(context)
         .getFilteredExpenseListByMonth(selectedMonth);
@@ -117,7 +118,7 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Новое название'),
+                              title: const Text('Новое название'),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -144,9 +145,6 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                                     setState(() {
                                       widget.expense.name = newName;
                                     });
-
-                                    // Здесь можете использовать newName
-                                    print('Новое название: $newName');
 
                                     Navigator.of(context)
                                         .pop(); // Закрыть диалог
@@ -235,8 +233,6 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                                       widget.expense.amount = newAmount;
                                     });
 
-                                    // Здесь можете использовать newName
-                                    print('Новое название: $newAmount');
                                     Navigator.of(context)
                                         .pop(); // Закрыть диалог
                                   },
@@ -284,14 +280,14 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                             text: 'Дата: ',
                           ),
                           TextSpan(
-                              text:
-                                  '${widget.expense.dateTime.day}/${widget.expense.dateTime.month}/${widget.expense.dateTime.year}',
-                              style: TextStyle(fontWeight: FontWeight.w500)),
+                            text: DateFormat('dd.MM.yyyy')
+                                .format(widget.expense.dateTime),
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ),
                     InkWell(
-                      // В методе onTap в вашем InkWell
                       onTap: () async {
                         // Показать DatePicker и получить выбранную дату
                         DateTime? selectedDate = await showDatePicker(

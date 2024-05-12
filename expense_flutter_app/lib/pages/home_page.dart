@@ -101,7 +101,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // text controllers
   final newExpenseNameController = TextEditingController();
   final newExpenseAmountController = TextEditingController();
   final _controller = PageController();
@@ -127,7 +126,7 @@ class _HomePageState extends State<HomePage> {
         .loadSelectedCurrency()
         .then((currency) {
       if (currency != null) {
-        // Если валюта была сохранена, обновите состояние вашего виджета
+        // Если валюта была сохранена, обновляется состояние виджета
         setState(() {
           _selectedCurrency = currency;
         });
@@ -151,11 +150,10 @@ class _HomePageState extends State<HomePage> {
       });
     });
 
-    // Вызовите sortExpensesByMonth с текущим выбранным месяцем
+    // Вызов sortExpensesByMonth с текущим выбранным месяцем
     Provider.of<ExpenseData>(context, listen: false)
         .sortExpensesByMonth(selectedMonth);
   }
-  // Восстанавливаем состояние сортировки
 
   void addNewExpense() {
     String? selectedCategory;
@@ -240,7 +238,6 @@ class _HomePageState extends State<HomePage> {
                         }).toList(),
                       ),
                       SizedBox(height: 16),
-                      // Добавленный отступ снизу
                       Spacer(),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
@@ -285,10 +282,7 @@ class _HomePageState extends State<HomePage> {
   void deleteExpense(ExpenseItem expense) {
     Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
   }
-  /*
-  void editExpense(ExpenseItem expense) {
-    Provider.of<ExpenseData>(context, listen: false).updateExpense(index, updatedExpense)
-  }*/
+  
   
   // save
   void save(BuildContext context, String selectedCategory) {
@@ -404,10 +398,10 @@ class _HomePageState extends State<HomePage> {
       return getMonthNameInRussian(monthName);
     }).toList();
     int selectedMonthIndex = DateTime.now().month - 1;
-    // Получите текущий выбранный месяц из провайдера
+    // Получаем текущий выбранный месяц из провайдера
     DateTime selectedMonth = Provider.of<ExpenseData>(context).selectedMonth;
 
-// 2. Фильтрация расходов по выбранному месяцу
+    // Фильтрация расходов по выбранному месяцу
     List<ExpenseItem> filteredExpenses = Provider.of<ExpenseData>(context)
         .getFilteredExpenseListByMonth(selectedMonth);
 
@@ -449,7 +443,6 @@ class _HomePageState extends State<HomePage> {
                                 Color.fromARGB(255, 229, 33, 243),
                                 Color.fromARGB(255, 239, 73, 73),
                                 Color.fromARGB(255, 20, 30, 218),
-                                // Добавьте другие цвета по мере необходимости
                               ],
                             ),
                           ],

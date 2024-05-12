@@ -147,21 +147,17 @@ class _AddBudgetState extends State<AddBudget> {
                   selectedPeriod = null;
                 });
 
-                // Вывод в консоль
-                print(
-                    'Сохраненный бюджет: Сумма - $amount, Период до - ${periodEndDate.toIso8601String()}');
-
                 // Оповещение пользователя
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Бюджет сохранен'),
                     duration: Duration(
-                        seconds: 2), // Установите продолжительность отображения
+                        seconds: 2), // продолжительность отображения
                     behavior: SnackBarBehavior
-                        .floating, // Установите поведение снекбара
+                        .floating, // поведение снекбара
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
-                          10), // Установите скругленные углы
+                          10),
                     ),
                   ),
                 );

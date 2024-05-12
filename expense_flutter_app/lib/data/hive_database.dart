@@ -71,13 +71,6 @@ class HiveDataBase {
     return allExpenses;
   }
 
-  
-
-  
-
-void updateExpenseName(){
-
-}
 
 
 
