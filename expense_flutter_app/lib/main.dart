@@ -1,4 +1,5 @@
 import 'package:expense_flutter_app/data/expense_data.dart';
+import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:expense_flutter_app/models/goal_item.dart';
 import 'package:expense_flutter_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,11 @@ void main() async {
   // initialize hive
   await Hive.initFlutter();
   Hive.registerAdapter(AmountHistoryItemAdapter());
+  Hive.registerAdapter(AccountAdapter());
   // open a hive box
   await Hive.openBox('expense_database');
+  await Hive.openBox<Account>('accounts');
+
   await initializeDateFormatting('ru');
 
   runApp(const MyApp());

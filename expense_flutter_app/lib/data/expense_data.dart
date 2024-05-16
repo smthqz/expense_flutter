@@ -2,18 +2,22 @@ import 'package:expense_flutter_app/data/hive_database.dart';
 import 'package:expense_flutter_app/data/hive_database.dart';
 import 'package:expense_flutter_app/data/hive_database.dart';
 import 'package:expense_flutter_app/datetime/date_time_helper.dart';
+import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:expense_flutter_app/models/budget_item.dart';
 import 'package:expense_flutter_app/models/expense_item.dart';
 import 'package:expense_flutter_app/models/goal_item.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_flutter_app/data/hive_budget.dart' as bd;
 import 'package:expense_flutter_app/data/hive_goals.dart' as gd;
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'hive_database.dart';
 
 class ExpenseData extends ChangeNotifier {
   GoalItem? _goalForHistoryPage;
+  List<Account> _accountList = [];
 
+  List<Account> get accountList => _accountList;
   GoalItem? get goalForHistoryPage => _goalForHistoryPage;
   String _selectedCurrency = 'RUB'; // Инициализируем текущую выбранную валюту
 
@@ -37,7 +41,13 @@ class ExpenseData extends ChangeNotifier {
       _isPrepareDataCalled =
           true; // Устанавливаем флаг в true после вызова prepareData
     }
+    loadAccounts();
     loadSelectedCurrency();
+  }
+
+  Future<void> loadAccounts() async {
+    _accountList = await getAccounts();
+    notifyListeners();
   }
 
   void updateCurrency(String currency) {
@@ -80,6 +90,7 @@ class ExpenseData extends ChangeNotifier {
     deleteExpenses();
     deleteAllGoals();
     deleteBudget();
+    deleteAllAccounts();
     notifyListeners(); // Очистить все данные из БД
   }
 
@@ -299,6 +310,69 @@ class ExpenseData extends ChangeNotifier {
 
     // Уведомляем слушателей об изменениях
     notifyListeners();
+  }
+
+  // Метод для добавления нового счета в БД
+  Future<void> addAccount(Account account) async {
+    final box = await Hive.openBox<Account>('accounts');
+    await box.add(account);
+    notifyListeners();
+  }
+
+  // Метод для получения списка всех счетов из БД
+  Future<List<Account>> getAccounts() async {
+    final box = await Hive.openBox<Account>('accounts');
+    notifyListeners();
+    return box.values.toList();
+  }
+
+  void saveAccountListToDatabase() async {
+    // Открываем или создаем коробку (базу данных) для счетов
+    var box = await Hive.openBox<Account>('accounts');
+    // Находим каждый счет в базе данных и обновляем его баланс
+    for (var account in accountList) {
+      // Находим индекс счета в базе данных
+      int index = box.values.toList().indexWhere((element) => element.balance == account.balance);
+      if (index != -1) {
+        // Если счет найден в базе данных, обновляем его баланс
+        await box.putAt(index, account);
+      }
+    }
+  }
+
+  void updateAccountBalance(String accountName, double newBalance) {
+    // Найдите счет в списке счетов по имени
+    Account accountToUpdate =
+        accountList.firstWhere((account) => account.name == accountName);
+    // Обновите баланс счета
+    accountToUpdate.balance = newBalance;
+    saveAccountListToDatabase();
+    // Сохраните изменения в базе данных или в другом хранилище
+    // Примерное название метода для сохранения списка счетов
+    // Уведомите слушателей о изменении данных
+    notifyListeners();
+  }
+
+  // Метод для обновления счета в БД по индексу
+  Future<void> updateAccount(int index, Account updatedAccount) async {
+    final box = await Hive.openBox<Account>('accounts');
+    await box.putAt(index, updatedAccount);
+    notifyListeners();
+  }
+
+  // Метод для удаления счета из БД по индексу
+  Future<void> deleteAccount(int index) async {
+    final box = await Hive.openBox<Account>('accounts');
+    await box.deleteAt(index);
+    notifyListeners();
+  }
+
+  void deleteAllAccounts() async {
+    accountList.clear();
+    notifyListeners();
+    final box = await Hive.openBox<Account>('accounts');
+    box.clear();
+    // Уведомить слушателей после удаления всех счетов
   }
 
   // Manage goals
@@ -656,7 +730,6 @@ class ExpenseData extends ChangeNotifier {
 
     return categoryExpenses;
   }
-
 
   double getTotalExpenses() {
     double totalAmount = 0.0;

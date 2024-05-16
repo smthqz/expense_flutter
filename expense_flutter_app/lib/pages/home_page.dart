@@ -3,7 +3,9 @@ import 'package:expense_flutter_app/components/expense_summary.dart';
 import 'package:expense_flutter_app/components/expense_tile.dart';
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/heat_map_calendar/heat_map_calendar.dart';
+import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:expense_flutter_app/models/expense_item.dart';
+import 'package:expense_flutter_app/pages/accounts_page.dart';
 import 'package:expense_flutter_app/pages/budget_page.dart';
 import 'package:expense_flutter_app/pages/expense_detail.dart';
 import 'package:expense_flutter_app/pages/settings_page.dart';
@@ -43,6 +45,7 @@ class _BottomNavigationBarExampleState
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
+    AccountPage(),
     BudgetPage(),
     SettingsPage()
   ];
@@ -68,6 +71,11 @@ class _BottomNavigationBarExampleState
               icon: Icons.home,
               iconColor: Color(0xFF8393A5),
               text: 'Главная',
+            ),
+            GButton(
+              icon: Icons.account_balance_wallet,
+              iconColor: Color(0xFF8393A5),
+              text: 'Счета',
             ),
             GButton(
               icon: Icons.dataset,
@@ -122,6 +130,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ExpenseData>(context, listen: false).loadAccounts();
     Provider.of<ExpenseData>(context, listen: false)
         .loadSelectedCurrency()
         .then((currency) {
@@ -203,6 +212,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 16),
                       // Сумма расхода
                       TextField(
+                        maxLength: 10,
                         controller: newExpenseAmountController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -282,8 +292,7 @@ class _HomePageState extends State<HomePage> {
   void deleteExpense(ExpenseItem expense) {
     Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
   }
-  
-  
+
   // save
   void save(BuildContext context, String selectedCategory) {
     if (newExpenseNameController.text.isNotEmpty &&
@@ -458,9 +467,7 @@ class _HomePageState extends State<HomePage> {
                           dotHeight: 3,
                           dotWidth: 40),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 20,),
                     Padding(
                       padding: EdgeInsets.only(
                           left: 16, right: 16), // Добавляем отступ слева

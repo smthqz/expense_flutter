@@ -1,3 +1,4 @@
+import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:hive/hive.dart';
 
 import '../models/expense_item.dart';
@@ -31,6 +32,7 @@ class HiveDataBase {
         expense.amount,
         expense.dateTime,
         expense.category,
+        
       ];
       allExpensesFormatted.add(expenseFormatted);
     }
@@ -61,10 +63,11 @@ class HiveDataBase {
       String amount = savedExpenses[i][1];
       DateTime dateTime = savedExpenses[i][2];
       String category = savedExpenses[i][3];
+      
 
       // create expense item
       ExpenseItem expense = ExpenseItem(
-          name: name, amount: amount, dateTime: dateTime, category: category);
+          name: name, amount: amount, dateTime: dateTime, category: category, );
       // add expense to overall list of expenses
       allExpenses.add(expense);
     }

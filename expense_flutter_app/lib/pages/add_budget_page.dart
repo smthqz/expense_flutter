@@ -75,6 +75,7 @@ class _AddBudgetState extends State<AddBudget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
+              maxLength: 10,
               controller: _controller,
               keyboardType: TextInputType.number,
               style: const TextStyle(color: Colors.black),

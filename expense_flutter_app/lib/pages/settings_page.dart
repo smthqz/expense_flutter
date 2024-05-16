@@ -1,5 +1,6 @@
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/data/hive_database.dart';
+import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    String newAccountName = '';
+    String newAccountBalance = '';
     ExpenseData expenseData = Provider.of<ExpenseData>(context);
     return Container(
       color: Colors.white,
@@ -245,25 +248,32 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             InkWell(
               onTap: () {
-                showDialog(context: context, builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Удаление данных'),
-                    content: Text("Все операции, бюджет и цели будут удалены."),
-                    actions: [
-                        TextButton(
-                          onPressed: () {
-                            Provider.of<ExpenseData>(context, listen: false).clearAllData();
-                            Navigator.of(context).pop();
-                          }, 
-                          child: Text('Удалить', style: TextStyle(color: Colors.red),)),
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Удаление данных'),
+                        content: Text(
+                            "Все операции, бюджет, цели и счета будут удалены."),
+                        actions: [
                           TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }, 
-                        child: Text('Отмена')),
-                    ],
-                  );
-                });
+                              onPressed: () {
+                                Provider.of<ExpenseData>(context, listen: false)
+                                    .clearAllData();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'Удалить',
+                                style: TextStyle(color: Colors.red),
+                              )),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Отмена')),
+                        ],
+                      );
+                    });
               },
               child: Column(
                 children: [
@@ -284,7 +294,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Row(
                     children: [
                       Text(
-                        'Все операции, бюджет и цели будут удалены.',
+                        'Все операции, бюджет, цели и счета будут удалены.',
                         style: TextStyle(color: const Color(0xFF8393A5)),
                       )
                     ],

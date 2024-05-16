@@ -108,6 +108,7 @@ class _AddGoalsPageState extends State<AddGoalsPage> {
             ),
             const SizedBox(height: 20),
             TextField(
+              maxLength: 10,
               controller: _goalAmountController,
               decoration: InputDecoration(
                 labelText: 'Сумма цели',

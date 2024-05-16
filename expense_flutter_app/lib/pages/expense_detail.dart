@@ -306,7 +306,6 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                           });
                         }
                       },
-
                       child: Icon(
                         Icons.edit,
                         size: 16,
@@ -376,6 +375,7 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                   ],
                 ),
               ),
+              
             ],
           ),
         ),
