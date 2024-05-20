@@ -1,5 +1,6 @@
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/data/hive_budget.dart';
+import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:expense_flutter_app/models/expense_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -41,8 +42,10 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
     DateTime selectedMonth = Provider.of<ExpenseData>(context).selectedMonth;
     List<ExpenseItem> filteredExpenses = Provider.of<ExpenseData>(context)
         .getFilteredExpenseListByMonth(selectedMonth);
+
     String currencySymbol = Provider.of<ExpenseData>(context).currencySymbol;
     ExpenseData expenseData = Provider.of<ExpenseData>(context);
+
     int index = filteredExpenses.indexOf(widget.expense);
     if (expenseData.selectedCurrency == 'RUB') {
       currencySymbol = '₽';
@@ -375,7 +378,83 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                   ],
                 ),
               ),
-              
+              Column(
+                children: [
+                  // Ваши другие виджеты
+                  if (widget.expense.account != null)
+                    const Padding(
+                      padding: EdgeInsets.only(
+                          left: 16, right: 16, top: 4, bottom: 4),
+                      child: Divider(
+                        color: Color(0xFF8393A5),
+                        thickness: 0.2,
+                      ),
+                    ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Другие виджеты
+                    if (widget.expense.account != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
+                              children: [
+                                TextSpan(
+                                  text: 'Счет: ',
+                                ),
+                                TextSpan(
+                                  text: '${widget.expense.account?.name}',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SimpleDialog(
+                                    title: Text('Выберите счет'),
+                                    children:
+                                        expenseData.accountList.map((account) {
+                                      return ListTile(
+                                        title: Text(account.name),
+                                        onTap: () {
+                                          // Обновить счет расхода с помощью провайдера
+                                          expenseData.updateExpenseAccount(
+                                              index, account);
+                                          setState(() {
+                                            widget.expense.account = account;
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      );
+                                    }).toList(),
+                                  );
+                                },
+                              );
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    // Другие виджеты
+                  ],
+                ),
+              )
             ],
           ),
         ),

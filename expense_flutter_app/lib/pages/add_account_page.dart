@@ -68,6 +68,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
             ),
             const SizedBox(height: 20),
             TextField(
+              maxLength: 10,
               controller: _balanceController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(

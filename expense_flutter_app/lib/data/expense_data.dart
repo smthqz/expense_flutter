@@ -326,13 +326,24 @@ class ExpenseData extends ChangeNotifier {
     return box.values.toList();
   }
 
+  // Метод для обновления баланса счета при добавлении расхода
+  void updateAccountBalanceByExpense(Account account, double expenseAmount) {
+    account.balance -= expenseAmount;
+    saveAccountListToDatabase();
+    // Тут нужно добавить логику сохранения изменений баланса счета в вашем хранилище данных (например, в Hive)
+    // После сохранения изменений вызывайте метод notifyListeners() для обновления интерфейса
+    notifyListeners();
+  }
+
   void saveAccountListToDatabase() async {
     // Открываем или создаем коробку (базу данных) для счетов
     var box = await Hive.openBox<Account>('accounts');
     // Находим каждый счет в базе данных и обновляем его баланс
     for (var account in accountList) {
       // Находим индекс счета в базе данных
-      int index = box.values.toList().indexWhere((element) => element.balance == account.balance);
+      int index = box.values
+          .toList()
+          .indexWhere((element) => element.balance == account.balance);
       if (index != -1) {
         // Если счет найден в базе данных, обновляем его баланс
         await box.putAt(index, account);
@@ -358,6 +369,21 @@ class ExpenseData extends ChangeNotifier {
     final box = await Hive.openBox<Account>('accounts');
     await box.putAt(index, updatedAccount);
     notifyListeners();
+  }
+
+  void updateAccountName(String oldName, String newName) {
+    int index = accountList.indexWhere((account) => account.name == oldName);
+    if (index != -1) {
+      accountList[index].name = newName;
+      saveAccountListToDatabase();
+      notifyListeners();
+    }
+  }
+
+  List<ExpenseItem> getExpensesForAccount(String accountName) {
+    return overallExpenseList
+        .where((expense) => expense.account?.name == accountName)
+        .toList();
   }
 
   // Метод для удаления счета из БД по индексу
@@ -600,6 +626,16 @@ class ExpenseData extends ChangeNotifier {
     }
   }
 
+  void updateExpenseAccount(int expenseIndex, Account newAccount) {
+    List<ExpenseItem> allExpenses = db.readData();
+    if (expenseIndex >= 0 && expenseIndex < allExpenses.length) {
+      allExpenses[expenseIndex].account = newAccount;
+      db.saveData(allExpenses);
+      prepareData();
+      notifyListeners();
+    }
+  }
+
   void sortExpensesByMonth(DateTime selectedMonth) {
     overallExpenseList.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     overallExpenseList = overallExpenseList
@@ -627,6 +663,8 @@ class ExpenseData extends ChangeNotifier {
   // delete expense
   void deleteExpense(ExpenseItem expense) {
     double expenseAmount = double.parse(expense.amount);
+    Account? selectedAccount = expense.account;
+    selectedAccount?.balance += expenseAmount;
 
     // Проверяем наличие текущего бюджета
     if (currentBudget != null) {

@@ -5,8 +5,8 @@ class ExpenseItem {
    String amount;
    DateTime dateTime;
    String category;
-   //Account account;
+   Account? account;
 
   ExpenseItem(
-      {required this.name, required this.amount, required this.dateTime, required this.category, /*required this.account*/});
+      {required this.name, required this.amount, required this.dateTime, required this.category, this.account});
 }

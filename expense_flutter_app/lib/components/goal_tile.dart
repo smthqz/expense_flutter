@@ -101,7 +101,7 @@ class GoalListItem extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: const Color(0xFFEEF0F4),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.all(12),
           child: Column(

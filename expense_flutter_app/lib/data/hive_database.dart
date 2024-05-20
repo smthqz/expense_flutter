@@ -32,6 +32,7 @@ class HiveDataBase {
         expense.amount,
         expense.dateTime,
         expense.category,
+        expense?.account
         
       ];
       allExpensesFormatted.add(expenseFormatted);
@@ -63,11 +64,12 @@ class HiveDataBase {
       String amount = savedExpenses[i][1];
       DateTime dateTime = savedExpenses[i][2];
       String category = savedExpenses[i][3];
+      Account? account = savedExpenses[i][4];
       
 
       // create expense item
       ExpenseItem expense = ExpenseItem(
-          name: name, amount: amount, dateTime: dateTime, category: category, );
+          name: name, amount: amount, dateTime: dateTime, category: category, account: account);
       // add expense to overall list of expenses
       allExpenses.add(expense);
     }

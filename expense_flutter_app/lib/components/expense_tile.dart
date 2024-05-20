@@ -84,7 +84,7 @@ class ExpenseTile extends StatelessWidget {
               ],
             ),
             trailing: Text(
-              '$currencySymbol$amount',
+              '$amount $currencySymbol',
               style: TextStyle(color: Colors.black, fontSize: 18),
             ),
           ),

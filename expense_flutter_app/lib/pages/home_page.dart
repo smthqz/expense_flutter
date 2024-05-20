@@ -164,15 +164,16 @@ class _HomePageState extends State<HomePage> {
         .sortExpensesByMonth(selectedMonth);
   }
 
-  void addNewExpense() {
+  void addNewExpense() async {
     String? selectedCategory;
+    Account? selectedAccount;
+    List<Account> accountList =
+        await Provider.of<ExpenseData>(context, listen: false).getAccounts();
 
     showBarModalBottomSheet(
       context: context,
       builder: (context) {
-        // Получаем высоту экрана
         double screenHeight = MediaQuery.of(context).size.height;
-        // Устанавливаем высоту в 90% от высоты экрана
         double height = screenHeight * 0.9;
         return SizedBox(
           height: height,
@@ -193,7 +194,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      // Название расхода
                       TextField(
                         controller: newExpenseNameController,
                         decoration: InputDecoration(
@@ -210,7 +210,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      // Сумма расхода
                       TextField(
                         maxLength: 10,
                         controller: newExpenseAmountController,
@@ -229,7 +228,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      // Выбор категории
                       DropdownButton<String>(
                         value: selectedCategory,
                         onChanged: (String? value) {
@@ -248,6 +246,25 @@ class _HomePageState extends State<HomePage> {
                         }).toList(),
                       ),
                       SizedBox(height: 16),
+                      if (accountList.isNotEmpty)
+                        DropdownButton<Account>(
+                          value: selectedAccount,
+                          onChanged: (Account? value) {
+                            setState(() {
+                              selectedAccount = value;
+                            });
+                          },
+                          hint: Text('Выберите счет'),
+                          isExpanded: true,
+                          items: accountList.map<DropdownMenuItem<Account>>(
+                              (Account account) {
+                            return DropdownMenuItem<Account>(
+                              value: account,
+                              child: Text(account.name),
+                            );
+                          }).toList(),
+                        ),
+                      SizedBox(height: 16),
                       Spacer(),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
@@ -256,7 +273,13 @@ class _HomePageState extends State<HomePage> {
                             if (selectedCategory != null &&
                                 newExpenseNameController.text.isNotEmpty &&
                                 newExpenseAmountController.text.isNotEmpty) {
-                              save(context, selectedCategory!);
+                              if (accountList.isNotEmpty &&
+                                  selectedAccount != null) {
+                                save(context, selectedCategory!,
+                                    selectedAccount!);
+                              } else {
+                                save(context, selectedCategory!, null);
+                              }
                             } else {
                               Navigator.of(context).pop();
                             }
@@ -293,8 +316,8 @@ class _HomePageState extends State<HomePage> {
     Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
   }
 
-  // save
-  void save(BuildContext context, String selectedCategory) {
+  void save(
+      BuildContext context, String selectedCategory, Account? selectedAccount) {
     if (newExpenseNameController.text.isNotEmpty &&
         newExpenseAmountController.text.isNotEmpty &&
         selectedCategory != null) {
@@ -310,10 +333,16 @@ class _HomePageState extends State<HomePage> {
         amount: newExpenseAmountController.text,
         dateTime: DateTime.now(),
         category: selectedCategory,
+        account: selectedAccount, // может быть null
       );
       // add the new expense
       Provider.of<ExpenseData>(context, listen: false)
           .addNewExpense(newExpense);
+      if (selectedAccount != null) {
+        // Обновление баланса счета, если счет выбран
+        Provider.of<ExpenseData>(context, listen: false)
+            .updateAccountBalanceByExpense(selectedAccount, expenseAmount);
+      }
       // Применяем сортировку к списку
       Provider.of<ExpenseData>(context, listen: false)
           .sortExpensesByCurrentSortOption();
@@ -467,7 +496,9 @@ class _HomePageState extends State<HomePage> {
                           dotHeight: 3,
                           dotWidth: 40),
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Padding(
                       padding: EdgeInsets.only(
                           left: 16, right: 16), // Добавляем отступ слева
@@ -619,7 +650,7 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius: BorderRadius.circular(
                                         16), // Загругленные края
                                   ),
-                                  padding: EdgeInsets.all(8),
+                                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                                   child: Center(
                                     child: Text(
                                       'Расходов нет',
@@ -640,7 +671,7 @@ class _HomePageState extends State<HomePage> {
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 return ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(16),
                                   child: ExpenseTile(
                                     name: filteredExpenses[index].name,
                                     amount: filteredExpenses[index].amount,
