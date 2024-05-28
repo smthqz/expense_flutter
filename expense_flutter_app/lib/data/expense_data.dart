@@ -1,6 +1,7 @@
 import 'package:expense_flutter_app/data/hive_database.dart';
 import 'package:expense_flutter_app/data/hive_database.dart';
 import 'package:expense_flutter_app/data/hive_database.dart';
+import 'package:expense_flutter_app/data/hive_user.dart';
 import 'package:expense_flutter_app/datetime/date_time_helper.dart';
 import 'package:expense_flutter_app/models/account_item.dart';
 import 'package:expense_flutter_app/models/budget_item.dart';
@@ -15,6 +16,7 @@ import 'hive_database.dart';
 
 class ExpenseData extends ChangeNotifier {
   GoalItem? _goalForHistoryPage;
+  String? userEmail;
   List<Account> _accountList = [];
 
   List<Account> get accountList => _accountList;
@@ -92,6 +94,21 @@ class ExpenseData extends ChangeNotifier {
     deleteBudget();
     deleteAllAccounts();
     notifyListeners(); // Очистить все данные из БД
+  }
+
+  void setUserEmail(String email) {
+    userEmail = email;
+    notifyListeners();
+  }
+
+  void clearUserEmail() {
+    userEmail = null;
+    notifyListeners();
+  }
+
+  void loadUserEmail() {
+    userEmail = HiveUser.getUserEmail();
+    notifyListeners();
   }
 
   // list of ALL expenses
@@ -330,8 +347,6 @@ class ExpenseData extends ChangeNotifier {
   void updateAccountBalanceByExpense(Account account, double expenseAmount) {
     account.balance -= expenseAmount;
     saveAccountListToDatabase();
-    // Тут нужно добавить логику сохранения изменений баланса счета в вашем хранилище данных (например, в Hive)
-    // После сохранения изменений вызывайте метод notifyListeners() для обновления интерфейса
     notifyListeners();
   }
 
@@ -411,13 +426,10 @@ class ExpenseData extends ChangeNotifier {
       String goalName, double amount) async {
     // Находим цель по имени
     GoalItem goal = goalList.firstWhere((goal) => goal.name == goalName);
-
     // Обновляем сумму накоплений и добавляем сумму в историю
     goal.addSavedAmount(amount);
-
     // Сохраняем обновленные данные в БД
     await gd.HiveGoalDatabase.updateGoalData(goal);
-
     // Уведомляем слушателей об изменении данных
     notifyListeners();
   }

@@ -64,6 +64,12 @@ class _BudgetPageState extends State<BudgetPage> {
     return formattedValue;
   }
 
+  String formatDouble2(double value) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    // Format the number and replace commas with spaces
+    return formatter.format(value).replaceAll(',', ' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final expenseData = Provider.of<ExpenseData>(context);
@@ -136,7 +142,7 @@ class _BudgetPageState extends State<BudgetPage> {
                             ),
                             TextSpan(
                               text:
-                                  '${formatDouble(currentBudget.amount)} $currencySymbol',
+                                  '${formatDouble2(currentBudget.amount)} $currencySymbol',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -164,7 +170,7 @@ class _BudgetPageState extends State<BudgetPage> {
                       ),
                       TextSpan(
                         //text: '$spentAmount',
-                        text: '${formatDouble(spentAmount)} $currencySymbol',
+                        text: '${formatDouble2(spentAmount)} $currencySymbol',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 16,

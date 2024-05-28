@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:expense_flutter_app/components/goal_summary.dart';
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/data/hive_goals.dart';
@@ -6,6 +8,7 @@ import 'package:expense_flutter_app/pages/goal_history_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class GoalListItem extends StatelessWidget {
@@ -73,6 +76,12 @@ class GoalListItem extends StatelessWidget {
     return formattedValue;
   }
 
+  String formatDouble2(double value) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    // Format the number and replace commas with spaces
+    return formatter.format(value).replaceAll(',', ' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     String currencySymbol = Provider.of<ExpenseData>(context).currencySymbol;
@@ -94,6 +103,9 @@ class GoalListItem extends StatelessWidget {
         MaterialPageRoute(builder: (context) => GoalHistoryPage(goal: goal)),
       );
     }
+
+    double savedPercentage = (goal.savedAmount / goal.goalAmount) * 100;
+    savedPercentage = min(savedPercentage, 100.0); // Ограничение значения 100%
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +144,7 @@ class GoalListItem extends StatelessWidget {
                       text: 'Сумма накопления: ',
                     ),
                     TextSpan(
-                      text: '${formatDouble(goal.goalAmount)} $currencySymbol',
+                      text: '${formatDouble2(goal.goalAmount)} $currencySymbol',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
@@ -154,14 +166,14 @@ class GoalListItem extends StatelessWidget {
                     ),
                     TextSpan(
                       text:
-                          '${formatDouble(goal.savedAmount)} $currencySymbol ',
+                          '${formatDouble2(goal.savedAmount)} $currencySymbol ',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     TextSpan(
                       text:
-                          '(${((goal.savedAmount / goal.goalAmount) * 100).toStringAsFixed(2)}%)',
+                          '(${savedPercentage.toStringAsFixed(2)}%)',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: goal.savedAmount / goal.goalAmount < 0.8

@@ -2,6 +2,7 @@ import 'package:expense_flutter_app/components/account_expense_tile.dart';
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/models/expense_item.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AccountDetailPage extends StatefulWidget {
@@ -42,6 +43,12 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
     }
 
     return formattedValue;
+  }
+
+  String formatDouble2(double value) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    // Format the number and replace commas with spaces
+    return formatter.format(value).replaceAll(',', ' ');
   }
 
   void _showEditAccountNameDialog(BuildContext context) {
@@ -176,8 +183,8 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
               children: [
                 IntrinsicWidth(
                   child: TextFormField(
-                    keyboardType: TextInputType.numberWithOptions(),
-                    initialValue: formatDouble(accountBalance),
+                    keyboardType: TextInputType.number,
+                    initialValue: formatDouble2(accountBalance),
                     maxLength: 10,
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(

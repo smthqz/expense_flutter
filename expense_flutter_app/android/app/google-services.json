@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "184642570505",
+    "project_id": "expenseappauth",
+    "storage_bucket": "expenseappauth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184642570505:android:373ce3be2c6232ef3f2bd8",
+        "android_client_info": {
+          "package_name": "com.example.expense_flutter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0mWfZ9C215XSpt-YrciPxzxJR7HNsveg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

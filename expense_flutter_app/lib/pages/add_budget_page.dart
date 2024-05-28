@@ -140,7 +140,6 @@ class _AddBudgetState extends State<AddBudget> {
                     startDate: now,
                     endDate: periodEndDate,
                     originalAmount: amount);
-
                 await HiveDataBase.saveBudgetData(newBudget);
                 // Очистка поля ввода и сброс выбранного периода
                 _controller.clear();

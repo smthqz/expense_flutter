@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 
 class AccountAdapter extends TypeAdapter<Account> {
@@ -20,11 +19,12 @@ class AccountAdapter extends TypeAdapter<Account> {
   }
 }
 
-
-
 class Account {
   String name;
   double balance;
 
-  Account({required this.name, required this.balance,});
+  Account({
+    required this.name,
+    required this.balance,
+  });
 }

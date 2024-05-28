@@ -1,6 +1,9 @@
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/data/hive_database.dart';
+import 'package:expense_flutter_app/data/hive_user.dart';
+import 'package:expense_flutter_app/pages/login_page.dart';
 import 'package:expense_flutter_app/models/account_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -13,13 +16,25 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  var user = FirebaseAuth.instance.currentUser;
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+    HiveUser.removeUserEmail();
+    Provider.of<ExpenseData>(context, listen: false).clearUserEmail();
+    setState(() {
+      user = null;
+    });
+  }
+
   String _selectedCurrency = 'RUB'; // Инициализируем текущую выбранную валюту
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     String newAccountName = '';
     String newAccountBalance = '';
     ExpenseData expenseData = Provider.of<ExpenseData>(context);
+    final userEmail = expenseData.userEmail;
     return Container(
       color: Colors.white,
       child: Padding(
@@ -35,6 +50,56 @@ class _SettingsPageState extends State<SettingsPage> {
                   fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 20),
+            InkWell(
+              onTap: () {
+                if (user != null) {
+                  // Если пользователь авторизован, то ничего не делаем при нажатии
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    user != null
+                        ? 'Аккаунт: ${expenseData.userEmail}'
+                        : 'Войти в аккаунт',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
+                  if (user != null)
+                    GestureDetector(
+                        onTap: signUserOut,
+                        child: Icon(
+                          Icons.logout,
+                          size: 20,
+                          color: Colors.red,
+                        )),
+                  if (user == null)
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: Colors.black,
+                    ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            const Divider(
+              color: Color(0xFF8393A5),
+              thickness: 0.2,
+            ),
+            SizedBox(
+              height: 8,
+            ),
             InkWell(
               onTap: () {
                 showBarModalBottomSheet(

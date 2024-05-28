@@ -53,12 +53,10 @@ class _AddGoalsPageState extends State<AddGoalsPage> {
       SnackBar(
         content: Text('Цель сохранена'),
         duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior
-                        .floating, 
+        behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          10), 
-                    ),
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
     Navigator.pop(context, goal);
@@ -67,7 +65,7 @@ class _AddGoalsPageState extends State<AddGoalsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Добавляем этот параметр
+      resizeToAvoidBottomInset: true, // Добавляем этот параметр
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -86,85 +84,93 @@ class _AddGoalsPageState extends State<AddGoalsPage> {
           icon: const Icon(Icons.chevron_left, color: Colors.black, size: 30),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _goalNameController,
-              decoration: InputDecoration(
-                labelText: 'Название цели',
-                labelStyle: const TextStyle(color: Colors.black),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xFF8393A5)),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              maxLength: 10,
-              controller: _goalAmountController,
-              decoration: InputDecoration(
-                labelText: 'Сумма цели',
-                labelStyle: const TextStyle(color: Colors.black),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xFF8393A5)),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              textBaseline: TextBaseline.alphabetic,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Дата цели:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () => _selectDate(context),
-                  child: Text(
-                    '${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}',
-                    style: const TextStyle(fontSize: 16, color: Colors.blue),
+                TextField(
+                  controller: _goalNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Название цели',
+                    labelStyle: const TextStyle(color: Colors.black),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFF8393A5)),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
                 ),
-                const Icon(Icons.edit_calendar, color: Colors.blue),
+                const SizedBox(height: 20),
+                TextField(
+                  maxLength: 10,
+                  controller: _goalAmountController,
+                  decoration: InputDecoration(
+                    labelText: 'Сумма цели',
+                    labelStyle: const TextStyle(color: Colors.black),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0xFF8393A5)),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                Row(
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    const Text(
+                      'Дата достижения цели:',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () => _selectDate(context),
+                      child: Text(
+                        '${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}',
+                        style: const TextStyle(fontSize: 16, color: Colors.blue),
+                      ),
+                    ),
+                    const Icon(Icons.edit_calendar, color: Colors.blue),
+                  ],
+                ),
+                const SizedBox(height: 80), // Добавлен отступ внизу
               ],
             ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: _saveGoal,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(const Color(0xFF3A86FF)),
-                minimumSize:
-                    MaterialStateProperty.all(const Size(double.infinity, 50)),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                onPressed: _saveGoal,
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(const Color(0xFF3A86FF)),
+                  minimumSize:
+                      MaterialStateProperty.all(const Size(double.infinity, 50)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
-              ),
-              child: const Text(
-                'Сохранить цель',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                child: const Text(
+                  'Сохранить цель',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

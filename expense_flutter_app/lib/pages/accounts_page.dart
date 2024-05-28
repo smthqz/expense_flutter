@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/models/account_item.dart';
@@ -26,6 +27,12 @@ String formatDouble(double value) {
 
   return formattedValue;
 }
+
+String formatDouble2(double value) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    // Format the number and replace commas with spaces
+    return formatter.format(value).replaceAll(',', ' ');
+  }
 
 class _AccountPageState extends State<AccountPage> {
   @override
@@ -63,7 +70,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       SizedBox(height: 2),
                       Text(
-                        '${formatDouble(totalBalance)} $currencySymbol',
+                        '${formatDouble2(totalBalance)} $currencySymbol',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 24,

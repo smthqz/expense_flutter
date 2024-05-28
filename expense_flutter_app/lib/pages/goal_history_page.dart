@@ -47,6 +47,12 @@ class _GoalHistoryPageState extends State<GoalHistoryPage> {
     return '+$formattedValue';
   }
 
+  String formatDouble2(double value) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    // Format the number and replace commas with spaces
+    return formatter.format(value).replaceAll(',', ' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final expenseData = Provider.of<ExpenseData>(context);
@@ -107,7 +113,7 @@ class _GoalHistoryPageState extends State<GoalHistoryPage> {
           var item = amountHistory.elementAt(
               reversedIndex ~/ 2); // Получаем элемент с перевернутым индексом
           String formattedAmount =
-              formatDouble(item.amount) + ' $currencySymbol';
+              formatDouble2(item.amount) + ' $currencySymbol';
           String formattedDate = DateFormat('dd.MM.yyyy').format(item.date);
           return ListTile(
             title: Text(

@@ -14,13 +14,10 @@ class MyPieChart extends StatelessWidget {
   String formatDouble(double value) {
     String formattedValue = value.toString();
 
-    // Проверяем, если значение является целым числом
     if (value == value.toInt()) {
-      formattedValue =
-          value.toInt().toString(); // Преобразуем в строку без дробной части
+      formattedValue = value.toInt().toString();
     } else {
-      formattedValue =
-          formattedValue.replaceAll(RegExp(r'(?<=\.\d*?)0*?$'), '');
+      formattedValue = formattedValue.replaceAll(RegExp(r'(?<=\.\d*?)0*?$'), '');
     }
 
     return '$formattedValue';
@@ -28,29 +25,86 @@ class MyPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 150, // задаем ширину
-      height: 150, // задаем высоту
-      child: Stack(
-        children: [
-          Transform.scale(
-            scale: 0.70,
-            child: PieChart(
-              PieChartData(
-                sectionsSpace: 8,
-                sections: _buildPieChartSections(),
-              ),
+    List<Widget> legendItems = _buildLegendItems();
+
+    List<Widget> firstRowItems = legendItems.length > 3 ? legendItems.sublist(0, 3) : legendItems; // первый ряд
+    List<Widget> secondRowItems = legendItems.length > 3 ? legendItems.sublist(3) : []; // второй ряд
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 200,
+          height: 200,
+          child: PieChart(
+            PieChartData(
+              sectionsSpace: 4,
+              centerSpaceRadius: 70,
+              sections: _buildPieChartSections(),
             ),
           ),
-          Positioned(
-            right: 0, // Располагаем в левом углу
-            bottom: 4, // Располагаем внизу
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16,),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: _buildLegend(),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < firstRowItems.length; i++)
+                        Padding(
+                          padding: EdgeInsets.only(right: 8.0),
+                          child: firstRowItems[i],
+                        ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 6),
+                if (legendItems.length > 3)
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (int i = 0; i < secondRowItems.length; i++)
+                          Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: secondRowItems[i],
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildLegendItems() {
+    List<Widget> items = [];
+
+    categoryExpenses.forEach((category, expense) {
+      Color color = colors[items.length % colors.length];
+      items.add(_buildLegendItem(category, expense, color));
+    });
+
+    return items;
+  }
+
+  Widget _buildLegendItem(String category, double expense, Color color) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '$category ${formatDouble(expense)} ₽',
+        style: TextStyle(fontSize: 14, color: Colors.white),
       ),
     );
   }
@@ -62,53 +116,15 @@ class MyPieChart extends StatelessWidget {
     categoryExpenses.forEach((category, expense) {
       sections.add(
         PieChartSectionData(
-          showTitle: true,
+          showTitle: false,
           value: expense,
-          title: formatDouble(expense), // Используем форматированное значение
           color: colors[colorIndex],
-          radius: 30, // Радиус секции
-          titleStyle: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          radius: 15,
         ),
       );
-      colorIndex = (colorIndex + 1) % colors.length; // Переходим к следующему цвету
+      colorIndex = (colorIndex + 1) % colors.length;
     });
 
     return sections;
-  }
-
-  List<Widget> _buildLegend() {
-    List<Widget> legendWidgets = [];
-    int colorIndex = 0;
-    categoryExpenses.forEach((category, _) {
-      legendWidgets.add(
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: Row(
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: colors[colorIndex],
-                  borderRadius: BorderRadius.circular(6)
-                ),
-              ),
-              SizedBox(width: 4),
-              Text(
-                category,
-                style: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-            ],
-          ),
-        ),
-      );
-      legendWidgets.add(SizedBox(height: 4));
-      colorIndex = (colorIndex + 1) % colors.length;
-    });
-    return legendWidgets;
   }
 }

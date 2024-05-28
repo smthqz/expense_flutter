@@ -17,12 +17,14 @@ dependencies:
   flutter_slidable: ^3.1.0
   flutter_heatmap_calendar: ^1.0.5
   smooth_page_indicator: ^1.1.0
-  flutter_svg: ^2.0.10+1
   google_nav_bar: ^5.0.6
   percent_indicator: ^4.2.3
   modal_bottom_sheet: ^3.0.0
-  material_text_fields: ^1.0.3
   intl: ^0.19.0
+  encrypt: ^5.0.3
+  flutter_secure_storage: ^9.2.2
+  firebase_auth: ^4.19.6
+  firebase_core: ^2.31.1
 
 dev_dependencies:
   flutter_test:

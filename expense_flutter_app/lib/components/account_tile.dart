@@ -2,6 +2,7 @@ import 'package:expense_flutter_app/data/expense_data.dart';
 import 'package:expense_flutter_app/pages/account_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AccountTile extends StatelessWidget {
@@ -27,6 +28,12 @@ class AccountTile extends StatelessWidget {
     }
 
     return formattedValue;
+  }
+
+  String formatDouble2(double value) {
+    final formatter = NumberFormat('#,##0', 'en_US');
+    // Format the number and replace commas with spaces
+    return formatter.format(value).replaceAll(',', ' ');
   }
 
   @override
@@ -80,7 +87,7 @@ class AccountTile extends StatelessWidget {
               ],
             ),
             Text(
-              '${formatDouble(accountBalance)} $currencySymbol',
+              '${formatDouble2(accountBalance)} $currencySymbol',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black,
