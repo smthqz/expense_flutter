@@ -54,6 +54,14 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
     } else if (expenseData.selectedCurrency == 'EUR') {
       currencySymbol = '€';
     }
+
+    String formatDouble2(double value) {
+      final formatter = NumberFormat('#,##0', 'en_US');
+      // Format the number and replace commas with spaces
+      return formatter.format(value).replaceAll(',', ' ');
+    }
+    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -196,7 +204,8 @@ class _ExpenseDetailState extends State<ExpenseDetail> {
                             text: 'Сумма: ',
                           ),
                           TextSpan(
-                              text: '${widget.expense.amount} $currencySymbol',
+                            
+                              text: '${formatDouble2(double.parse(widget.expense.amount))} $currencySymbol',
                               style: TextStyle(fontWeight: FontWeight.w500)),
                         ],
                       ),

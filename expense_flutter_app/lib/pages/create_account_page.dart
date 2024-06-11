@@ -12,8 +12,10 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _firstPasswordController = TextEditingController();
-  final TextEditingController _secondPasswordController = TextEditingController();
+  final TextEditingController _firstPasswordController =
+      TextEditingController();
+  final TextEditingController _secondPasswordController =
+      TextEditingController();
 
   String? _emailError;
   String? _passwordError;
@@ -66,7 +68,8 @@ class _CreatePageState extends State<CreatePage> {
 
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text, password: _secondPasswordController.text);
+          email: _emailController.text,
+          password: _secondPasswordController.text);
       Provider.of<ExpenseData>(context, listen: false)
           .setUserEmail(_emailController.text);
       await HiveUser.saveUserEmail(_emailController.text);
@@ -76,6 +79,7 @@ class _CreatePageState extends State<CreatePage> {
       _showErrorDialog('Ошибка при создании аккаунта. Попробуйте снова.');
     }
   }
+
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -180,8 +184,8 @@ class _CreatePageState extends State<CreatePage> {
                 style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all(const Color(0xFF3A86FF)),
-                  minimumSize:
-                      MaterialStateProperty.all(const Size(double.infinity, 50)),
+                  minimumSize: MaterialStateProperty.all(
+                      const Size(double.infinity, 50)),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

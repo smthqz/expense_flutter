@@ -25,6 +25,12 @@ class ExpenseTile extends StatelessWidget {
 
   String _selectedCurrency = '';
 
+  String formatDouble2(double value) {
+      final formatter = NumberFormat('#,##0', 'en_US');
+      // Format the number and replace commas with spaces
+      return formatter.format(value).replaceAll(',', ' ');
+    }
+
   @override
   Widget build(BuildContext context) {
     String currencySymbol = Provider.of<ExpenseData>(context).currencySymbol;
@@ -84,7 +90,7 @@ class ExpenseTile extends StatelessWidget {
               ],
             ),
             trailing: Text(
-              '$amount $currencySymbol',
+              '${formatDouble2(double.parse(amount))} $currencySymbol',
               style: TextStyle(color: Colors.black, fontSize: 18),
             ),
           ),
